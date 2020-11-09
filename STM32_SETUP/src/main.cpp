@@ -21,7 +21,9 @@
 #include "main.h"
 #include "usart.h"
 #include "gpio.h"
+#include "MCP.hpp"
 #include <string.h>
+#include <vector>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -94,19 +96,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  GPIOA->MODER=(GPIOA->MODER&~GPIO_MODER_MODER10)| (0b01<<GPIO_MODER_MODER10_Pos);
-  GPIOA->OTYPER&=~GPIO_OTYPER_OT_10;
-  GPIOA->ODR|=GPIO_ODR_10;
 
-  GPIOB->MODER=(GPIOB->MODER&~GPIO_MODER_MODER3)| (0b01<<GPIO_MODER_MODER3_Pos);
-  GPIOB->OTYPER&=~GPIO_OTYPER_OT_3;
-  GPIOB->ODR|=GPIO_ODR_3;
+  MCP mcp;
+
+  mcp.TurnOnLed(2);
+
   while (1)
   {
     char *msgBuf = "Hello World!\n";
-    HAL_UART_Transmit(&huart2,(uint8_t*)msgBuf, strlen(msgBuf),HAL_MAX_DELAY);
-    
-    
+    HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
   }
   /* USER CODE END 3 */
 }
@@ -137,8 +135,7 @@ void SystemClock_Config(void)
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -172,7 +169,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
