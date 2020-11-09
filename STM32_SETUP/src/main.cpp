@@ -94,10 +94,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  GPIOA->MODER=(GPIOA->MODER&~GPIO_MODER_MODER10)| (0b01<<GPIO_MODER_MODER10_Pos);
+  GPIOA->OTYPER&=~GPIO_OTYPER_OT_10;
+  GPIOA->ODR|=GPIO_ODR_10;
+
+  GPIOB->MODER=(GPIOB->MODER&~GPIO_MODER_MODER3)| (0b01<<GPIO_MODER_MODER3_Pos);
+  GPIOB->OTYPER&=~GPIO_OTYPER_OT_3;
+  GPIOB->ODR|=GPIO_ODR_3;
   while (1)
   {
     char *msgBuf = "Hello World!\n";
     HAL_UART_Transmit(&huart2,(uint8_t*)msgBuf, strlen(msgBuf),HAL_MAX_DELAY);
+    
+    
   }
   /* USER CODE END 3 */
 }

@@ -1,0 +1,11 @@
+{
+    "configurations": [
+    {
+        "name": "PlatformIO Debugger",
+        "request": "launch",
+        "type": "platformio-debug",
+        "executable": ".pio/build/myenv/firmware.elf",
+        "toolchainBinDir": "/usr/local/bin"
+    }
+    ]
+}
