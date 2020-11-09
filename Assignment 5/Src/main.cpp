@@ -151,12 +151,16 @@ int main(void)
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  GPIOA->MODER = (GPIOA->MODER & ~GPIO_MODER_MODER10) | (0b01 << GPIO_MODER_MODER10_Pos);
+  GPIOA->OTYPER &= ~GPIO_OTYPER_OT_10;
+  GPIOA->ODR |= GPIO_ODR_11;
   while (1)
   {
     sprintf(msgBuf, "%s", "In loop!\n");
     HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
-    GPIOA->ODR ^= (1 << 5); // Toggle GPIO pin PA5 (onboard green LED).
-    HAL_Delay(1000);
+    //GPIOA->ODR ^= (1 << 5); // Toggle GPIO pin PA5 (onboard green LED).
+    //GPIOA->ODR |= 1 >> 5;
+    HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
