@@ -65,6 +65,16 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
+extern "C" void EXTI2_IRQHandler(void)
+{
+  EXTI->PR |= EXTI_PR_PR5;
+  if ((GPIOB->IDR & GPIO_IDR_4) != 0)
+  {
+    char *msgBuf = "presss!\n";
+    HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
+  }
+}
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -97,14 +107,11 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  MCP mcp;
-
-  mcp.TurnOnLed(2);
-
   while (1)
   {
-    char *msgBuf = "Hello World!\n";
-    HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
+    EXTI2_IRQHandler();
+    //char *msgBuf = "Hello World!\n";
+    //HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
   }
   /* USER CODE END 3 */
 }
