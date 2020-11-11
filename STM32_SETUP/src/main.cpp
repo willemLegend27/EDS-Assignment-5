@@ -22,6 +22,9 @@
 #include "usart.h"
 #include "gpio.h"
 #include "MCP.hpp"
+#include "LED.hpp"
+#include "Button.hpp"
+#include "EventGenerator.hpp"
 #include <string.h>
 #include <vector>
 
@@ -121,27 +124,32 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  MCP mcp = MCP();
+  EventGenerator eventGenerator;
+  LED led1 = LED(0);
+  LED led2 = LED(1);
+  Button btn1;
+  Button btn2;
+  MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
 
   while (1)
   {
     EXTI2_IRQHandler();
     if (button1PressDuration >= 20 && button1PressDuration <= 500)
     {
-      mcp.TurnOnLed(1);
+      mcp.TurnOnLed(led1);
     }
     if (button1PressDuration > 500)
     {
-      mcp.TurnOffLed(1);
+      mcp.TurnOffLed(led2);
     }
 
     if (button2PressDuration >= 20 && button2PressDuration <= 500)
     {
-      mcp.TurnOnLed(2);
+      mcp.TurnOnLed(led1);
     }
     if (button2PressDuration > 500)
     {
-      mcp.TurnOffLed(2);
+      mcp.TurnOffLed(led2);
     }
   }
   /* USER CODE END 3 */

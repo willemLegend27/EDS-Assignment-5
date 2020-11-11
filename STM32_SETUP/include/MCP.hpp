@@ -1,21 +1,26 @@
 #ifndef MCP_HPP
 #define MCP_HPP
 
-#include <vector>
-#include <string>
+#include "LED.hpp"
+#include "Button.hpp"
+#include "IEventGenerator.hpp"
 
 class MCP
 {
 
 private:
-    std::vector<std::string> LEDPins = {"PA10,PB3"};
-    std::vector<std::string> ButtonPins;
+    IEventGenerator &eventGenerator;
+    LED &led1;
+    LED &led2;
+    Button &btn1;
+    Button btn2;
 
 public:
-    MCP();
+    MCP(IEventGenerator &eventGenerator, LED &led1, LED &led2, Button &btn1, Button &btn2);
     ~MCP();
-    void TurnOnLed(int LEDNumber);
-    void TurnOffLed(int LEDNumber);
+    int TurnOnLed(LED &led);
+    int TurnOffLed(LED &led);
+    int GetLedState(LED &led);
 
 private:
     void ConfigureOutputPins();

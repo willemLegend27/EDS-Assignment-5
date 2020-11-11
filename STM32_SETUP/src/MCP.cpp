@@ -1,7 +1,7 @@
 #include "MCP.hpp"
 #include "gpio.h"
 
-MCP::MCP()
+MCP::MCP(IEventGenerator &eventGenerator, LED &led1, LED &led2, Button &btn1, Button &btn2) : eventGenerator(eventGenerator), led1(led1), led2(led2), btn1(btn1), btn2(btn2)
 {
     this->ConfigureOutputPins();
     this->ConfigureInputPins();
@@ -40,26 +40,17 @@ void MCP::ConfigureInterruptPins()
     NVIC_EnableIRQ(EXTI1_IRQn);
 }
 
-void MCP::TurnOnLed(int LEDNumber)
+int MCP::TurnOnLed(LED &led)
 {
-    if (LEDNumber == 1)
-    {
-        GPIOA->ODR |= GPIO_ODR_10;
-    }
-    else if (LEDNumber == 2)
-    {
-        GPIOB->ODR |= GPIO_ODR_3;
-    }
+    led.ON();
+
+    
+    
 }
 
-void MCP::TurnOffLed(int LEDNumber)
+int MCP::TurnOffLed(LED &led)
 {
-    if (LEDNumber == 1)
-    {
-        GPIOA->ODR &= ~GPIO_ODR_10;
-    }
-    else if (LEDNumber == 2)
-    {
-        GPIOB->ODR &= ~GPIO_ODR_3;
-    }
+    led.OFF();
+    
+    
 }
