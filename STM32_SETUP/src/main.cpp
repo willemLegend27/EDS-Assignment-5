@@ -65,28 +65,21 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
-
-
-bool ledOn = false;
+long int pressDuration;
 extern "C" void EXTI2_IRQHandler(void)
-{ 
+{
   EXTI->PR |= EXTI_PR_PR5;
-  if ((GPIOB->IDR & GPIO_IDR_5) == 0)
+  if ((GPIOB->IDR & GPIO_IDR_5) != 0)
   {
-    //if(ledOn){
-      //GPIOA->IDR |= GPIO_ODR_10;
-      //mcp.TurnOffLed(1);
-      //ledOn = false;
-    //} 
-    //else
-    //{ 
-      //GPIOA->ODR |= GPIO_ODR_10;
-      //mcp.TurnOnLed(1);
-      ledOn = true;
-    //}
+    pressDuration += 1;
+    char *msgBuf = "Hello World!\n";
+    HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
+  }
+  else
+  {
+    pressDuration = 0;
   }
 }
-
 
 int main(void)
 {
@@ -120,12 +113,22 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   MCP mcp = MCP();
-  mcp.TurnOnLed(1);
-  mcp.TurnOnLed(2);
-  EXTI2_IRQHandler();
+  //mcp.TurnOnLed(1);
+  //mcp.TurnOnLed(2);
+
+  //mcp.TurnOffLed(2);
+
   while (1)
   {
-    
+    EXTI2_IRQHandler();
+    if (pressDuration >= 20 && pressDuration <= 500)
+    {
+      mcp.TurnOnLed(1);
+    }
+    if (pressDuration > 500)
+    {
+      mcp.TurnOffLed(1);
+    }
     //char *msgBuf = "Hello World!\n";
     //HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
   }
