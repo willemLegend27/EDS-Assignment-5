@@ -106,10 +106,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  EXTI2_IRQHandler();
   while (1)
   {
-    EXTI2_IRQHandler();
+    
     //char *msgBuf = "Hello World!\n";
     //HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
   }
