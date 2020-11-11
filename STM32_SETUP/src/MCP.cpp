@@ -3,9 +3,14 @@
 
 MCP::MCP()
 {
-    ConfigureOutputPins();
-    ConfigureInputPins();
-    ConfigureInterruptPins();
+    this->ConfigureOutputPins();
+    this->ConfigureInputPins();
+    this->ConfigureInterruptPins();
+}
+
+MCP::~MCP()
+{
+    
 }
 
 void MCP::ConfigureOutputPins()
@@ -28,9 +33,9 @@ void MCP::ConfigureInputPins()
     
 }
 
-void ConfigureInterruptPins()
+void MCP::ConfigureInterruptPins()
 {
-    SYSCFG->EXTICR[2] = (SYSCFG->EXTICR[2] & ~SYSCFG_EXTICR2_EXTI5_PB) | (0b1111 << SYSCFG_EXTICR2_EXTI5_Pos);
+    SYSCFG->EXTICR[2] = (SYSCFG->EXTICR[2] & ~SYSCFG_EXTICR2_EXTI5_PB) | (0b001 << SYSCFG_EXTICR2_EXTI5_Pos);
 
     EXTI->FTSR = EXTI_FTSR_TR2;
     EXTI->IMR = EXTI_IMR_MR2;

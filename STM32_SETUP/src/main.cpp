@@ -65,15 +65,28 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
+
+
+bool ledOn = false;
 extern "C" void EXTI2_IRQHandler(void)
-{
+{ 
   EXTI->PR |= EXTI_PR_PR5;
-  if ((GPIOB->IDR & GPIO_IDR_4) != 0)
+  if ((GPIOB->IDR & GPIO_IDR_5) == 0)
   {
-    char *msgBuf = "presss!\n";
-    HAL_UART_Transmit(&huart2, (uint8_t *)msgBuf, strlen(msgBuf), HAL_MAX_DELAY);
+    //if(ledOn){
+      //GPIOA->IDR |= GPIO_ODR_10;
+      //mcp.TurnOffLed(1);
+      //ledOn = false;
+    //} 
+    //else
+    //{ 
+      //GPIOA->ODR |= GPIO_ODR_10;
+      //mcp.TurnOnLed(1);
+      ledOn = true;
+    //}
   }
 }
+
 
 int main(void)
 {
@@ -106,6 +119,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  MCP mcp = MCP();
+  mcp.TurnOnLed(1);
+  mcp.TurnOnLed(2);
   EXTI2_IRQHandler();
   while (1)
   {
