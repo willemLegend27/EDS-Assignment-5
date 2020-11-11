@@ -5,6 +5,7 @@ MCP::MCP()
 {
     ConfigureOutputPins();
     ConfigureInputPins();
+    ConfigureInterruptPins();
 }
 
 void MCP::ConfigureOutputPins()
@@ -24,6 +25,11 @@ void MCP::ConfigureInputPins()
     GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODER4) | (0b00 << GPIO_MODER_MODER4_Pos); //input
     GPIOB->PUPDR = (GPIOB->PUPDR & ~GPIO_PUPDR_PUPDR4) | (0b01 << GPIO_PUPDR_PUPDR4_Pos); //pullup
 
+    
+}
+
+void ConfigureInterruptPins()
+{
     SYSCFG->EXTICR[5] = (SYSCFG->EXTICR[5] & ~SYSCFG_EXTICR2_EXTI5_PB) | (0b1111 << SYSCFG_EXTICR2_EXTI5_Pos);
 
     EXTI->FTSR = EXTI_FTSR_TR2;
@@ -54,4 +60,3 @@ void MCP::TurnOffLed(int LEDNumber)
         GPIOB->IDR |= GPIO_ODR_3;
     }
 }
-
