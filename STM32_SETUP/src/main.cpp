@@ -133,7 +133,6 @@ int main(void)
 
   while (1)
   {
-    EXTI2_IRQHandler();
     if (button1PressDuration >= 20 && button1PressDuration <= 500)
     {
       mcp.TurnOnLed(led1);
