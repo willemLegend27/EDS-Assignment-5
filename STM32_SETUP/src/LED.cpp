@@ -7,7 +7,7 @@ LED::LED(int ledNumber) : ledNumber(ledNumber)
 LED::~LED()
 {
 }
-int LED::ON()
+int LED::On()
 {
     if (ledNumber == 0)
     {
@@ -21,7 +21,7 @@ int LED::ON()
     }
     return -1;
 }
-int LED::OFF()
+int LED::Off()
 {
     if (ledNumber == 0)
     {
@@ -35,6 +35,8 @@ int LED::OFF()
     }
     return -1;
 }
-int LED::GetState()
+States LED::GetState()
 {
+    States ledState = LED_OFF;
+    return ledState;
 }

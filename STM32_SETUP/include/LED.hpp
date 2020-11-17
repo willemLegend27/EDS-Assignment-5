@@ -1,6 +1,8 @@
 #ifndef LED_HPP
 #define LED_HPP
 
+#include "States.hpp"
+
 class LED
 {
 private:
@@ -9,10 +11,9 @@ private:
 public:
     LED(int ledNumber);
     ~LED();
-    int ON();
-    int OFF();
-    int GetState();
-
+    int On();
+    int Off();
+    States GetState();
 private:
 };
 

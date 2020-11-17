@@ -6,4 +6,6 @@ EventGenerator::EventGenerator()
 
 Events EventGenerator::GetEvent()
 {
+    Events event = ButtonLongPress;
+    return event;
 }

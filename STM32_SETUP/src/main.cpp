@@ -70,11 +70,11 @@ void SystemClock_Config(void);
   */
 long int button1PressDuration;
 long int button2PressDuration;
-extern "C" void EXTI2_IRQHandler(void)
+extern "C" void EXTI4_IRQHandler(void)
 {
-  EXTI->PR |= EXTI_PR_PR5;
   EXTI->PR |= EXTI_PR_PR4;
-  if ((GPIOB->IDR & GPIO_IDR_5) != 0)
+
+  if ((GPIOB->IDR & GPIO_IDR_4) != 0)
   {
     button1PressDuration += 1;
   }
@@ -82,19 +82,16 @@ extern "C" void EXTI2_IRQHandler(void)
   {
     button1PressDuration = 0;
   }
-
-  if ((GPIOB->IDR & GPIO_IDR_4) != 0)
-  {
-    button2PressDuration += 1;
-  }
-  else
-  {
-    button2PressDuration = 0;
-  }
 }
 
 int main(void)
 {
+  EventGenerator eventGenerator;
+  LED led1 = LED(0);
+  LED led2 = LED(1);
+  Button btn1;
+  Button btn2;
+  MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -124,12 +121,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  EventGenerator eventGenerator;
-  LED led1 = LED(0);
-  LED led2 = LED(1);
-  Button btn1;
-  Button btn2;
-  MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
 
   while (1)
   {

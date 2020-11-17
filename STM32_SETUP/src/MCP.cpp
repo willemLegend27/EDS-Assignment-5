@@ -23,6 +23,7 @@ void MCP::ConfigureOutputPins()
 
 void MCP::ConfigureInputPins()
 {
+
     //PB5 , PB4
     GPIOB->MODER = (GPIOB->MODER & ~GPIO_MODER_MODER5) | (0b00 << GPIO_MODER_MODER5_Pos); //input
     GPIOB->PUPDR = (GPIOB->PUPDR & ~GPIO_PUPDR_PUPDR5) | (0b01 << GPIO_PUPDR_PUPDR5_Pos); //pullup
@@ -32,27 +33,25 @@ void MCP::ConfigureInputPins()
 
 void MCP::ConfigureInterruptPins()
 {
+
     //PB5 , PB4
-    SYSCFG->EXTICR[2] = (SYSCFG->EXTICR[2] & ~SYSCFG_EXTICR2_EXTI5_PB) | (0b001 << SYSCFG_EXTICR2_EXTI5_Pos);
-    SYSCFG->EXTICR[2] = (SYSCFG->EXTICR[2] & ~SYSCFG_EXTICR2_EXTI4_PB) | (0b001 << SYSCFG_EXTICR2_EXTI4_Pos);
-    EXTI->FTSR = EXTI_FTSR_TR5;
-    EXTI->IMR = EXTI_IMR_MR5;
-    EXTI->FTSR = EXTI_FTSR_TR4;
-    EXTI->IMR = EXTI_IMR_MR4;
+    SYSCFG->EXTICR[1] = (SYSCFG->EXTICR[1] & ~SYSCFG_EXTICR2_EXTI4_PB) | (0b001 << SYSCFG_EXTICR2_EXTI4_Pos);
+    SYSCFG->EXTICR[1] = (SYSCFG->EXTICR[1] & ~SYSCFG_EXTICR2_EXTI5_PB) | (0b001 << SYSCFG_EXTICR2_EXTI5_Pos);
+    //PB4 enable interrupt
+    EXTI->FTSR |= EXTI_FTSR_TR1;
+    EXTI->RTSR |= EXTI_RTSR_TR1;
+    EXTI->IMR |= EXTI_IMR_MR1;
     NVIC_EnableIRQ(EXTI1_IRQn);
 }
 
 int MCP::TurnOnLed(LED &led)
 {
-    led.ON();
-
-    
-    
+    led.On();
+    return 0;
 }
 
 int MCP::TurnOffLed(LED &led)
 {
-    led.OFF();
-    
-    
+    led.Off();
+    return 0;
 }
