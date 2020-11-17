@@ -68,13 +68,59 @@ void SystemClock_Config(void);
   * @brief  The application entry point.
   * @retval int
   */
+
 long int button1PressDuration;
 long int button2PressDuration;
-extern "C" void EXTI2_IRQHandler(void)
+long int button3PressDuration;
+bool LED1On = false;
+bool LED2On = false;
+bool LED3On = false;
+
+extern "C" void EXTI4_IRQHandler(void)
 {
-  EXTI->PR |= EXTI_PR_PR5;
   EXTI->PR |= EXTI_PR_PR4;
-  if ((GPIOB->IDR & GPIO_IDR_5) != 0)
+  button1PressDuration += 1;
+  if (LED1On == true)
+  {
+    LED1On = false;
+  }
+  else
+  {
+    LED1On = true;
+  }
+}
+
+extern "C" void EXTI9_5_IRQHandler(void)
+{
+  EXTI->PR |= EXTI_PR_PR4;
+  button2PressDuration += 1;
+  if (LED2On == true)
+  {
+    LED2On = false;
+  }
+  else
+  {
+    LED2On = true;
+  }
+}
+
+extern "C" void EXTI15_10_IRQHandler(void)
+{
+  EXTI->PR |= EXTI_PR_PR13;
+  button3PressDuration += 1;
+  if (LED3On == true)
+  {
+    LED3On = false;
+  }
+  else
+  {
+    LED3On = true;
+  }
+}
+
+void HandleButton1()
+{
+  if (LED1On)
   {
     button1PressDuration += 1;
   }
@@ -82,8 +128,11 @@ extern "C" void EXTI2_IRQHandler(void)
   {
     button1PressDuration = 0;
   }
+}
 
-  if ((GPIOB->IDR & GPIO_IDR_4) != 0)
+void HandleButton2()
+{
+  if (LED2On)
   {
     button2PressDuration += 1;
   }
@@ -93,8 +142,57 @@ extern "C" void EXTI2_IRQHandler(void)
   }
 }
 
+void HandleButton3()
+{
+  if (LED3On)
+  {
+    button3PressDuration += 1;
+  }
+  else
+  {
+    button3PressDuration = 0;
+  }
+}
+
+void HandleLED1(MCP mcp, LED led1)
+{
+  if (button1PressDuration >= 20 && button1PressDuration <= 500)
+  {
+    mcp.TurnOnLed(led1);
+  }
+  if (button1PressDuration > 500)
+  {
+    mcp.TurnOffLed(led1);
+  }
+}
+
+void HandleLED2(MCP mcp, LED led2)
+{
+  if (button2PressDuration >= 20 && button2PressDuration <= 500)
+  {
+    mcp.TurnOnLed(led2);
+  }
+  if (button2PressDuration > 500)
+  {
+    mcp.TurnOffLed(led2);
+  }
+}
+
+void HandleLED3(MCP mcp, LED led3)
+{
+  if (button3PressDuration >= 20 && button3PressDuration <= 500)
+  {
+    mcp.TurnOnLed(led3);
+  }
+  if (button3PressDuration > 500)
+  {
+    mcp.TurnOffLed(led3);
+  }
+}
+
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -127,29 +225,23 @@ int main(void)
   EventGenerator eventGenerator;
   LED led1 = LED(0);
   LED led2 = LED(1);
+  LED led3 = LED(2);
   Button btn1;
   Button btn2;
   MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
 
   while (1)
   {
-    if (button1PressDuration >= 20 && button1PressDuration <= 500)
-    {
-      mcp.TurnOnLed(led1);
-    }
-    if (button1PressDuration > 500)
-    {
-      mcp.TurnOffLed(led2);
-    }
 
-    if (button2PressDuration >= 20 && button2PressDuration <= 500)
-    {
-      mcp.TurnOnLed(led1);
-    }
-    if (button2PressDuration > 500)
-    {
-      mcp.TurnOffLed(led2);
-    }
+    HandleButton1();
+    HandleButton2();
+    //onboard button
+    HandleButton3();
+
+    HandleLED1(mcp, led1);
+    HandleLED2(mcp, led2);
+    //onboard LED
+    HandleLED3(mcp, led3);
   }
   /* USER CODE END 3 */
 }
