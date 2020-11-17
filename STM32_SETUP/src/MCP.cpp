@@ -76,7 +76,7 @@ void MCP::HandleStateMachine1(Events ev)
         {
             if (GetLedState(led1) == -1)
             {
-                TurnOnLed(led1);
+                currentState = LED_ON;
             }
         }
         break;
@@ -85,7 +85,7 @@ void MCP::HandleStateMachine1(Events ev)
         {
             if (GetLedState(led1) == 0)
             {
-                TurnOffLed(led1);
+                currentState = STANDBY;
             }
         }
         break;
@@ -104,7 +104,7 @@ void MCP::HandleStateMachine2(Events ev)
         {
             if (GetLedState(led2) == -1)
             {
-                TurnOnLed(led2);
+                currentState = LED_ON;
             }
         }
         break;
@@ -113,7 +113,7 @@ void MCP::HandleStateMachine2(Events ev)
         {
             if (GetLedState(led2) == 0)
             {
-                TurnOffLed(led2);
+                currentState = STANDBY;
             }
         }
         break;
