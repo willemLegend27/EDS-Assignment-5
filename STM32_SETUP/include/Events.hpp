@@ -3,10 +3,8 @@
 
 enum Events
 {
-    Button1ShortPress,
-    Button1LongPress,
-    Button2ShortPress,
-    Button2LongPress
+    ButtonShortPress,
+    ButtonLongPress
 };
 
 #endif

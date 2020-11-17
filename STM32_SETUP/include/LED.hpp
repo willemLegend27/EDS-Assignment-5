@@ -9,8 +9,8 @@ private:
 public:
     LED(int ledNumber);
     ~LED();
-    int ON();
-    int OFF();
+    void ON();
+    void OFF();
     int GetState();
 
 private:

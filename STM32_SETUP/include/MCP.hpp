@@ -4,6 +4,7 @@
 #include "LED.hpp"
 #include "Button.hpp"
 #include "IEventGenerator.hpp"
+#include "States.hpp"
 
 class MCP
 {
@@ -14,14 +15,16 @@ private:
     LED &led2;
     Button &btn1;
     Button btn2;
+    State currentState;
 
 public:
     MCP(IEventGenerator &eventGenerator, LED &led1, LED &led2, Button &btn1, Button &btn2);
     ~MCP();
-    int TurnOnLed(LED &led);
-    int TurnOffLed(LED &led);
+    void TurnOnLed(LED &led);
+    void TurnOffLed(LED &led);
     int GetLedState(LED &led);
-    void HandleEvent(Events ev);
+    void HandleStateMachine1(Events ev);
+    void HandleStateMachine2(Events ev);
 
 private:
     void ConfigureOutputPins();

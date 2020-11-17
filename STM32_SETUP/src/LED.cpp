@@ -7,34 +7,51 @@ LED::LED(int ledNumber) : ledNumber(ledNumber)
 LED::~LED()
 {
 }
-int LED::ON()
+void LED::ON()
 {
-    if (ledNumber == 0)
+    if (ledNumber == 1)
     {
         GPIOA->ODR |= GPIO_ODR_10;
-        return 0;
     }
-    else if (ledNumber == 1)
+    else if (ledNumber == 2)
     {
         GPIOA->ODR |= GPIO_ODR_5;
-        return 0;
     }
-    return -1;
 }
-int LED::OFF()
+void LED::OFF()
 {
-    if (ledNumber == 0)
+    if (ledNumber == 1)
     {
         GPIOA->ODR &= ~GPIO_ODR_10;
-        return 0;
     }
-    else if (ledNumber == 1)
+    else if (ledNumber == 2)
     {
         GPIOA->ODR &= ~GPIO_ODR_5;
-        return 0;
     }
-    return -1;
 }
 int LED::GetState()
 {
+    if (ledNumber == 1)
+    {
+        if ((GPIOA->IDR & GPIO_IDR_10) == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (ledNumber == 2)
+    {
+        if ((GPIOA->IDR & GPIO_IDR_5) == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    return -1;
 }

@@ -1,11 +1,13 @@
 #include "MCP.hpp"
 #include "gpio.h"
+#include "States.hpp"
 
 MCP::MCP(IEventGenerator &eventGenerator, LED &led1, LED &led2, Button &btn1, Button &btn2) : eventGenerator(eventGenerator), led1(led1), led2(led2), btn1(btn1), btn2(btn2)
 {
     this->ConfigureOutputPins();
     this->ConfigureInputPins();
     this->ConfigureInterruptPins();
+    currentState = STANDBY;
 }
 
 MCP::~MCP()
@@ -50,31 +52,72 @@ void MCP::ConfigureInterruptPins()
     EXTI->IMR |= EXTI_IMR_MR13;
 }
 
-int MCP::TurnOnLed(LED &led)
+void MCP::TurnOnLed(LED &led)
 {
     led.ON();
 }
 
-int MCP::TurnOffLed(LED &led)
+void MCP::TurnOffLed(LED &led)
 {
     led.OFF();
 }
 
-void MCP::HandleEvent(Events ev)
+int MCP::GetLedState(LED &led)
 {
-    switch (ev)
+    return led.GetState();
+}
+
+void MCP::HandleStateMachine1(Events ev)
+{
+    switch (currentState)
     {
-    case Button1ShortPress:
-        TurnOnLed(led1);
+    case STANDBY:
+        if (ev == ButtonShortPress)
+        {
+            if (GetLedState(led1) == -1)
+            {
+                TurnOnLed(led1);
+            }
+        }
         break;
-    case Button2ShortPress:
-        TurnOnLed(led2);
+    case LED_ON:
+        if (ev == ButtonLongPress)
+        {
+            if (GetLedState(led1) == 0)
+            {
+                TurnOffLed(led1);
+            }
+        }
         break;
-    case Button1LongPress:
-        TurnOffLed(led1);
+    default:
+
         break;
-    case Button2LongPress:
-        TurnOffLed(led2);
+    }
+}
+
+void MCP::HandleStateMachine2(Events ev)
+{
+    switch (currentState)
+    {
+    case STANDBY:
+        if (ev == ButtonShortPress)
+        {
+            if (GetLedState(led2) == -1)
+            {
+                TurnOnLed(led2);
+            }
+        }
+        break;
+    case LED_ON:
+        if (ev == ButtonLongPress)
+        {
+            if (GetLedState(led2) == 0)
+            {
+                TurnOffLed(led2);
+            }
+        }
+        break;
+    default:
         break;
     }
 }

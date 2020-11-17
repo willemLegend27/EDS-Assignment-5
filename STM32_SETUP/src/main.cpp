@@ -25,7 +25,6 @@
 #include "LED.hpp"
 #include "Button.hpp"
 #include "EventGenerator.hpp"
-#include "States.hpp"
 #include <string.h>
 #include <vector>
 
@@ -74,7 +73,6 @@ long int button1PressDuration;
 long int button2PressDuration;
 bool LED1On = false;
 bool LED2On = false;
-State currentState = STANDBY;
 
 extern "C" void EXTI9_5_IRQHandler(void)
 {
@@ -130,11 +128,11 @@ void HandleLED1(MCP mcp)
 {
   if (button1PressDuration >= 20 && button1PressDuration <= 500)
   {
-    mcp.HandleEvent(Button1ShortPress);
+    mcp.HandleStateMachine1(ButtonShortPress);
   }
   if (button1PressDuration > 500)
   {
-    mcp.HandleEvent(Button1LongPress);
+    mcp.HandleStateMachine1(ButtonLongPress);
   }
 }
 
@@ -142,11 +140,11 @@ void HandleLED2(MCP mcp)
 {
   if (button2PressDuration >= 20 && button2PressDuration <= 500)
   {
-    mcp.HandleEvent(Button2ShortPress);
+    mcp.HandleStateMachine2(ButtonShortPress);
   }
   if (button2PressDuration > 500)
   {
-    mcp.HandleEvent(Button2LongPress);
+    mcp.HandleStateMachine2(ButtonLongPress);
   }
 }
 
