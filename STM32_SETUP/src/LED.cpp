@@ -16,11 +16,6 @@ int LED::ON()
     }
     else if (ledNumber == 1)
     {
-        GPIOB->ODR |= GPIO_ODR_3;
-        return 0;
-    }
-    else if (ledNumber == 2)
-    {
         GPIOA->ODR |= GPIO_ODR_5;
         return 0;
     }
@@ -34,11 +29,6 @@ int LED::OFF()
         return 0;
     }
     else if (ledNumber == 1)
-    {
-        GPIOB->ODR &= ~GPIO_ODR_3;
-        return 0;
-    }
-    else if (ledNumber == 2)
     {
         GPIOA->ODR &= ~GPIO_ODR_5;
         return 0;

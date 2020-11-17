@@ -21,6 +21,7 @@ public:
     int TurnOnLed(LED &led);
     int TurnOffLed(LED &led);
     int GetLedState(LED &led);
+    void HandleEvent(Events ev);
 
 private:
     void ConfigureOutputPins();

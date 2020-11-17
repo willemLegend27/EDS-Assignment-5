@@ -25,6 +25,7 @@
 #include "LED.hpp"
 #include "Button.hpp"
 #include "EventGenerator.hpp"
+#include "States.hpp"
 #include <string.h>
 #include <vector>
 
@@ -71,15 +72,13 @@ void SystemClock_Config(void);
 
 long int button1PressDuration;
 long int button2PressDuration;
-long int button3PressDuration;
 bool LED1On = false;
 bool LED2On = false;
-bool LED3On = false;
+State currentState = STANDBY;
 
-extern "C" void EXTI4_IRQHandler(void)
+extern "C" void EXTI9_5_IRQHandler(void)
 {
   EXTI->PR |= EXTI_PR_PR4;
-  button1PressDuration += 1;
   if (LED1On == true)
   {
     LED1On = false;
@@ -90,10 +89,9 @@ extern "C" void EXTI4_IRQHandler(void)
   }
 }
 
-extern "C" void EXTI9_5_IRQHandler(void)
+extern "C" void EXTI15_10_IRQHandler(void)
 {
-  EXTI->PR |= EXTI_PR_PR4;
-  button2PressDuration += 1;
+  EXTI->PR |= EXTI_PR_PR13;
   if (LED2On == true)
   {
     LED2On = false;
@@ -101,20 +99,6 @@ extern "C" void EXTI9_5_IRQHandler(void)
   else
   {
     LED2On = true;
-  }
-}
-
-extern "C" void EXTI15_10_IRQHandler(void)
-{
-  EXTI->PR |= EXTI_PR_PR13;
-  button3PressDuration += 1;
-  if (LED3On == true)
-  {
-    LED3On = false;
-  }
-  else
-  {
-    LED3On = true;
   }
 }
 
@@ -142,51 +126,27 @@ void HandleButton2()
   }
 }
 
-void HandleButton3()
-{
-  if (LED3On)
-  {
-    button3PressDuration += 1;
-  }
-  else
-  {
-    button3PressDuration = 0;
-  }
-}
-
-void HandleLED1(MCP mcp, LED led1)
+void HandleLED1(MCP mcp)
 {
   if (button1PressDuration >= 20 && button1PressDuration <= 500)
   {
-    mcp.TurnOnLed(led1);
+    mcp.HandleEvent(Button1ShortPress);
   }
   if (button1PressDuration > 500)
   {
-    mcp.TurnOffLed(led1);
+    mcp.HandleEvent(Button1LongPress);
   }
 }
 
-void HandleLED2(MCP mcp, LED led2)
+void HandleLED2(MCP mcp)
 {
   if (button2PressDuration >= 20 && button2PressDuration <= 500)
   {
-    mcp.TurnOnLed(led2);
+    mcp.HandleEvent(Button2ShortPress);
   }
   if (button2PressDuration > 500)
   {
-    mcp.TurnOffLed(led2);
-  }
-}
-
-void HandleLED3(MCP mcp, LED led3)
-{
-  if (button3PressDuration >= 20 && button3PressDuration <= 500)
-  {
-    mcp.TurnOnLed(led3);
-  }
-  if (button3PressDuration > 500)
-  {
-    mcp.TurnOffLed(led3);
+    mcp.HandleEvent(Button2LongPress);
   }
 }
 
@@ -225,23 +185,19 @@ int main(void)
   EventGenerator eventGenerator;
   LED led1 = LED(0);
   LED led2 = LED(1);
-  LED led3 = LED(2);
   Button btn1;
   Button btn2;
   MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
 
   while (1)
   {
-
     HandleButton1();
-    HandleButton2();
     //onboard button
-    HandleButton3();
+    HandleButton2();
 
-    HandleLED1(mcp, led1);
-    HandleLED2(mcp, led2);
-    //onboard LED
-    HandleLED3(mcp, led3);
+    HandleLED1(mcp);
+    //onboard led
+    HandleLED2(mcp);
   }
   /* USER CODE END 3 */
 }
