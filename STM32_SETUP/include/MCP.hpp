@@ -23,13 +23,14 @@ public:
     void TurnOnLed(LED &led);
     void TurnOffLed(LED &led);
     int GetLedState(LED &led);
-    void HandleStateMachine1(Events ev);
-    void HandleStateMachine2(Events ev);
+    void HandleEvent(Events ev);
 
 private:
     void ConfigureOutputPins();
     void ConfigureInputPins();
     void ConfigureInterruptPins();
+    State HandleStandbyState(Events ev);
+    State HandleLedOnState(Events ev);
 };
 
 #endif

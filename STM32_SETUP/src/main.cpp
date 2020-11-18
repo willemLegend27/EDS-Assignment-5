@@ -70,13 +70,11 @@ void SystemClock_Config(void);
   */
 
 long int button1PressDuration;
-long int button2PressDuration;
 bool LED1On = false;
-bool LED2On = false;
 
-extern "C" void EXTI9_5_IRQHandler(void)
+extern "C" void EXTI15_10_IRQHandler(void)
 {
-  EXTI->PR |= EXTI_PR_PR4;
+  EXTI->PR |= EXTI_PR_PR13;
   if (LED1On == true)
   {
     LED1On = false;
@@ -87,20 +85,7 @@ extern "C" void EXTI9_5_IRQHandler(void)
   }
 }
 
-extern "C" void EXTI15_10_IRQHandler(void)
-{
-  EXTI->PR |= EXTI_PR_PR13;
-  if (LED2On == true)
-  {
-    LED2On = false;
-  }
-  else
-  {
-    LED2On = true;
-  }
-}
-
-void HandleButton1()
+void HandleOnboardButton()
 {
   if (LED1On)
   {
@@ -112,39 +97,15 @@ void HandleButton1()
   }
 }
 
-void HandleButton2()
-{
-  if (LED2On)
-  {
-    button2PressDuration += 1;
-  }
-  else
-  {
-    button2PressDuration = 0;
-  }
-}
-
-void HandleLED1(MCP mcp)
+void HandleOnboardLED(MCP mcp, Events *event)
 {
   if (button1PressDuration >= 20 && button1PressDuration <= 500)
   {
-    mcp.HandleStateMachine1(ButtonShortPress);
+    *event = ButtonShortPress;
   }
   if (button1PressDuration > 500)
   {
-    mcp.HandleStateMachine1(ButtonLongPress);
-  }
-}
-
-void HandleLED2(MCP mcp)
-{
-  if (button2PressDuration >= 20 && button2PressDuration <= 500)
-  {
-    mcp.HandleStateMachine2(ButtonShortPress);
-  }
-  if (button2PressDuration > 500)
-  {
-    mcp.HandleStateMachine2(ButtonLongPress);
+    *event = ButtonLongPress;
   }
 }
 
@@ -181,21 +142,23 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   EventGenerator eventGenerator;
-  LED led1 = LED(0);
-  LED led2 = LED(1);
+  LED led1 = LED(1);
+  LED led2 = LED(2);
   Button btn1;
   Button btn2;
   MCP mcp = MCP(eventGenerator, led1, led2, btn1, btn2);
+  Events currentEvent;
 
   while (1)
   {
-    HandleButton1();
-    //onboard button
-    HandleButton2();
 
-    HandleLED1(mcp);
+    //onboard button
+    HandleOnboardButton();
+
     //onboard led
-    HandleLED2(mcp);
+    HandleOnboardLED(mcp, &currentEvent);
+
+    mcp.HandleEvent(currentEvent);
   }
   /* USER CODE END 3 */
 }

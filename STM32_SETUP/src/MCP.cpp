@@ -67,57 +67,59 @@ int MCP::GetLedState(LED &led)
     return led.GetState();
 }
 
-void MCP::HandleStateMachine1(Events ev)
+void MCP::HandleEvent(Events ev)
 {
     switch (currentState)
     {
     case STANDBY:
-        if (ev == ButtonShortPress)
-        {
-            if (GetLedState(led1) == -1)
-            {
-                currentState = LED_ON;
-            }
-        }
+        __WFI();
+        currentState = HandleStandbyState(ev);
         break;
     case LED_ON:
-        if (ev == ButtonLongPress)
-        {
-            if (GetLedState(led1) == 0)
-            {
-                currentState = STANDBY;
-            }
-        }
+        TurnOnLed(led2);
+        currentState = HandleLedOnState(ev);
         break;
     default:
 
         break;
-    }
+    };
 }
 
-void MCP::HandleStateMachine2(Events ev)
+State MCP::HandleStandbyState(Events ev)
 {
-    switch (currentState)
+    switch (ev)
     {
-    case STANDBY:
-        if (ev == ButtonShortPress)
+    case ButtonShortPress:
+        if (GetLedState(led2) == 0)
         {
-            if (GetLedState(led2) == -1)
-            {
-                currentState = LED_ON;
-            }
+            currentState = LED_ON;
         }
         break;
-    case LED_ON:
-        if (ev == ButtonLongPress)
+    case ButtonLongPress:
+        currentState = STANDBY;
+        break;
+    default:
+        break;
+    }
+    return currentState;
+}
+
+State MCP::HandleLedOnState(Events ev)
+{
+    switch (ev)
+    {
+    case ButtonShortPress:
+        currentState = LED_ON;
+        break;
+    case ButtonLongPress:
+        if (GetLedState(led2) == 1)
         {
-            if (GetLedState(led2) == 0)
-            {
-                currentState = STANDBY;
-            }
+            TurnOffLed(led2);
+            currentState = STANDBY;
         }
         break;
     default:
         break;
     }
+    return currentState;
 }
